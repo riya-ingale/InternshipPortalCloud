@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static',filename='css/styles.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static',filename='css/newinternship.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    />
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <title>Internship Portal</title>
+  </head>
+  <body style="background-color: #ffe4e1">
+    <nav class="navbar navbar-expand-lg navbar-red navbar-dark">
+      <div class="wrap"></div>
+      <div class="container-fluid all-show">
+        <a class="navbar-brand" href="/" style="color: #c1c8e4">
+          <img
+            src="{{ url_for('static',filename='img/VIT.png') }}"
+            width="70"
+            height="30"
+            class="d-inline-block align-top"
+            alt=""
+          />
+          VIT Internship Portal
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="/"><i class="fa fa-home"> Home</i></a>
+            </li>
+            
+            {% if not current_user.role == "admin" %}
+            <li class="nav-item">
+              <a class="nav-link" href="/newinternship"
+                ><i class="fa fa-plus"> New Internship</i></a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/profile/{{current_user.id}}"
+                ><i class="fa fa-user"> User</i></a
+              >
+            </li>
+            {% endif %}
+
+            {% if current_user.role == "admin" %}
+            <li class="nav-item">
+              <a class="nav-link" href="/search"
+                ><i class="fa fa-search"> Search</i></a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/dashboard"
+                ><i class="fa fa-upload"> Upload Data</i></a>
+            </li>
+            {% endif %}
+
+            <li class="nav-item">
+              <a class="nav-link" href="/aboutus"
+                ><i class="fa fa-info-circle"> About us</i></a
+              >
+            </li>
+            {% if not current_user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/login"
+                ><i class="fa fa-sign-in"> Login</i></a
+              >
+            </li>
+            {% endif %} {% if current_user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="/logout"
+                ><i class="fa fa-sign-out"> Logout</i></a
+              >
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <p>
+      <br />
+    </p>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-steps/1.1.0/jquery.steps.min.js"></script>
+    <div class="wrapper">
+      <form method="POST" enctype="multipart/form-data">
+        <div id="wizard">
+          <!-- SECTION 1 -->
+          <h4></h4>
+          <section>
+            <p style="font-size: small; font-style: italic">
+              (Please fill all the required fields otherwise the form won't be
+              submitted)
+            </p>
+            <div class="form-row">
+              <label
+                >Name of the Company
+                <span style="color: red">(required)</span></label
+              >
+              <input
+                name="companyname"
+                type="text"
+                class="form-control"
+                value="{{internship.companyname}}"
+                required
+              />
+            </div>
+            <div class="form-row">
+              <label
+                >Role / Position
+                <span style="color: red">(required)</span></label
+              >
+              <input
+                name="position"
+                type="text"
+                class="form-control"
+                placeholder="ex - Web Development Intern, Business Analyst, Python Intern"
+                value="{{internship.position}}"
+                required
+              />
+            </div>
+
+            <label>Domain <span style="color: red">(required)</span></label>
+            <div class="input-group mb-3">
+              <select
+                class="custom-select"
+                name="domain"
+                id="inputGroupSelect02"
+              >
+                <option selected name="domain" value="">Choose...</option>
+                <option value="Web Development" name="domain">
+                  Web Development
+                </option>
+                <option value="Machine Learning" name="domain">
+                  Machine Learning
+                </option>
+                <option value="App Development" name="domain">
+                  App Development
+                </option>
+                <option value="Content Creation" name="domain">
+                  Content Creation
+                </option>
+                <option value="Sales and Marketing" name="domain">
+                  Sales and Marketing
+                </option>
+                <option value="Other" name="domain">Other</option>
+              </select>
+            </div>
+
+            <label
+              >Source of Internship
+              <span style="color: red">(required)</span></label
+            >
+            {% if internship.source == "VIT Internship" %}
+            <div class="input-group mb-3">
+              <select
+                class="custom-select"
+                name="source"
+                id="inputGroupSelect02"
+              >
+                <option value="VIT Internship" name="source" selected>
+                  VIT Internship
+                </option>
+                <option value="Internshala" name="source">Internshala</option>
+                <option value="Self" name="source">Self</option>
+              </select>
+            </div>
+            {% elif internship.source == "Internshala" %}
+            <div class="input-group mb-3">
+              <select
+                class="custom-select"
+                name="source"
+                id="inputGroupSelect02"
+              >
+                <option value="VIT Internship" name="source">
+                  VIT Internship
+                </option>
+                <option value="Internshala" name="source" selected>
+                  Internshala
+                </option>
+                <option value="Self" name="source">Self</option>
+              </select>
+            </div>
+            {% elif internship.source == "Self" %}
+            <div class="input-group mb-3">
+              <select
+                class="custom-select"
+                name="source"
+                id="inputGroupSelect02"
+              >
+                <option value="VIT Internship" name="source">
+                  VIT Internship
+                </option>
+                <option value="Internshala" name="source">Internshala</option>
+                <option value="Self" name="source" selected>Self</option>
+              </select>
+            </div>
+            {% else %}
+            <div class="input-group mb-3">
+              <select
+                class="custom-select"
+                name="source"
+                id="inputGroupSelect02"
+              >
+                <option value="" name="source" selected>Choose...</option>
+                <option value="VIT Internship" name="source">
+                  VIT Internship
+                </option>
+                <option value="Internshala" name="source">Internshala</option>
+                <option value="Self" name="source">Self</option>
+              </select>
+            </div>
+            {% endif %}
+
+            <div class="form-row">
+              <label
+                >Skills Acquired
+                <span style="color: red">(required)</span></label
+              >
+              <input
+                name="skills_acquired"
+                type="text"
+                class="form-control"
+                placeholder="ex- Machine learning, Marketing etc"
+                value="{{internship.skills_acquired}}"
+                required
+              />
+            </div>
+          </section>
+
+          <!-- SECTION 2 -->
+          <h4></h4>
+
+          <section>
+            <div class="form-row">
+              <label
+                >Name of Representative from Company
+                <span style="color: red">(required)</span></label
+              >
+              <input
+                name="companyrepresentative_name"
+                type="text"
+                class="form-control"
+                placeholder="Name of Representative from Company"
+                value="{{internship.companyrepresentative_name}}"
+                required
+              />
+            </div>
+
+            <div class="form-row">
+              <label
+                >Contact of Representative from Company
+                <span style="color: red">(required)</span></label
+              >
+              <input
+                name="companyrepresentative_contact"
+                type="text"
+                class="form-control"
+                placeholder="Contact of Representative from Company"
+                value="{{internship.companyrepresentative_contact}}"
+                required
+              />
+            </div>
+
+            <div class="form-row">
+              <label
+                >Starting Date <span style="color: red">(required)</span></label
+              >
+              <input
+                name="startdate"
+                type="date"
+                class="form-control"
+                value="{{internship.startdate}}"
+                required
+              />
+            </div>
+
+            <div class="form-row">
+              <label
+                >Ending date (Tentative if currently internship going on)
+                <span style="color: red">(required)</span></label
+              >
+              <input
+                name="enddate"
+                type="date"
+                class="form-control"
+                value="{{internship.enddate}}"
+                required
+              />
+            </div>
+
+            <label
+              >Year of Study <span style="color: red">(required)</span></label
+            >
+
+            <div class="input-group mb-3">
+              <select
+                class="custom-select"
+                name="source"
+                id="inputGroupSelect02"
+              >
+                <option selected value="" name="yearofstudy">Choose...</option>
+                <option value="SE" name="yearofstudy">SE</option>
+                <option value="TE" name="yearofstudy">TE</option>
+                <option value="BE" name="yearofstudy">BE</option>
+              </select>
+            </div>
+          </section>
+
+          <!-- SECTION 3 -->
+
+          <h4></h4>
+          <section>
+            <div class="input-group mb-3">
+              <div>
+                <label for="inputGroupFile01"
+                  >Offer Letter/Email Notification Screenshot
+                </label>
+                <input name="offerletter" type="file" id="inputGroupFile01" />
+              </div>
+            </div>
+            <div class="input-group mb-3">
+              <div>
+                <label for="inputGroupFile01">Completion Certificate </label>
+                <input
+                  name="completioncert"
+                  type="file"
+                  id="inputGroupFile01"
+                />
+              </div>
+            </div>
+            <div class="form-row">
+              <label
+                >Link to the Offer Letter/Email notification screenshot</label
+              >
+              <input
+                name="offerletter_link"
+                type="text"
+                class="form-control"
+                value="{{internship.offerletter_link}}"
+              />
+            </div>
+            <div class="form-row">
+              <label>Link to the Completion Certificate</label>
+              <input
+                name="completioncert_link"
+                type="text"
+                class="form-control"
+                value="{{completioncert_link}}"
+              />
+            </div>
+          </section>
+
+          <!-- SECTION 4 -->
+          <h4></h4>
+          <section>
+            <label
+              >Type of Internship<span style="color: red">
+                (required)</span
+              ></label
+            >
+
+            {% if internship.typeofinternship == "Only Certificates" %}
+            <div class="input-group mb-3">
+              <select
+                class="custom-select"
+                name="satisfied"
+                id="inputGroupSelect02"
+              >
+                <option name="type" value="">Choose...</option>
+                <option selected value="Only Certificates" name="type">
+                  Only Certificates
+                </option>
+                <option value="Stipend" name="type">Stipend</option>
+                <option value="Pay to Company" name="type">
+                  Pay to Company
+                </option>
+              </select>
+            </div>
+            {% elif internship.typeofinternship == "Stipend" %}
+            <div class="input-group mb-3">
+              <select
+                class="custom-select"
+                name="satisfied"
+                id="inputGroupSelect02"
+              >
+                <option name="type" value="">Choose...</option>
+                <option value="Only Certificates" name="type">
+                  Only Certificates
+                </option>
+                <option selected value="Stipend" name="type">Stipend</option>
+                <option value="Pay to Company" name="type">
+                  Pay to Company
+                </option>
+              </select>
+            </div>
+            {% elif internship.typeofinternship == "Pay to Company" %}
+            <div class="input-group mb-3">
+              <select
+                class="custom-select"
+                name="satisfied"
+                id="inputGroupSelect02"
+              >
+                <option name="type" value="">Choose...</option>
+                <option value="Only Certificates" name="type">
+                  Only Certificates
+                </option>
+                <option value="Stipend" name="type">Stipend</option>
+                <option selected value="Pay to Company" name="type">
+                  Pay to Company
+                </option>
+              </select>
+            </div>
+            {% else %}
+            <div class="input-group mb-3">
+              <select
+                class="custom-select"
+                name="satisfied"
+                id="inputGroupSelect02"
+              >
+                <option selected name="type" value="">Choose...</option>
+                <option value="Only Certificates" name="type">
+                  Only Certificates
+                </option>
+                <option value="Stipend" name="type">Stipend</option>
+                <option value="Pay to Company" name="type">
+                  Pay to Company
+                </option>
+              </select>
+            </div>
+            {% endif %}
+
+            <label
+              >Are you Satisfied with your Internship
+              <span style="color: red">(required)</span></label
+            >
+            {% if internship.satisfied == "Yes" %}
+            <div class="input-group mb-3">
+              <select
+                class="custom-select"
+                name="satisfied"
+                id="inputGroupSelect02"
+              >
+                <option name="satisfied">Choose...</option>
+                <option value="Yes" name="satisfied" selected>Yes</option>
+                <option value="No" name="satisfied">No</option>
+                <option value="Partly" name="satisfied">Partly</option>
+              </select>
+            </div>
+            {% elif internship.satisfied == "No" %}
+            <div class="input-group mb-3">
+              <select
+                class="custom-select"
+                name="satisfied"
+                id="inputGroupSelect02"
+              >
+                <option name="satisfied">Choose...</option>
+                <option value="Yes" name="satisfied">Yes</option>
+                <option value="No" name="satisfied" selected>No</option>
+                <option value="Partly" name="satisfied">Partly</option>
+              </select>
+            </div>
+            {% elif internship.satisfied == "Partly" %}
+            <div class="input-group mb-3">
+              <select
+                class="custom-select"
+                name="satisfied"
+                id="inputGroupSelect02"
+              >
+                <option name="satisfied">Choose...</option>
+                <option value="Yes" name="satisfied">Yes</option>
+                <option value="No" name="satisfied">No</option>
+                <option value="Partly" name="satisfied" selected>Partly</option>
+              </select>
+            </div>
+            {% else %}
+            <div class="input-group mb-3">
+              <select
+                class="custom-select"
+                name="satisfied"
+                id="inputGroupSelect02"
+              >
+                <option selected name="satisfied">Choose...</option>
+                <option value="Yes" name="satisfied">Yes</option>
+                <option value="No" name="satisfied">No</option>
+                <option value="Partly" name="satisfied">Partly</option>
+              </select>
+            </div>
+            {% endif %}
+
+            <label
+              >Would you Recommend your Friend to join this Company?
+              <span style="color: red">(required)</span></label
+            >
+            {% if internship.recommendation == "Yes" %}
+            <div class="input-group mb-3">
+              <select
+                class="custom-select"
+                name="recommendation"
+                id="inputGroupSelect02"
+              >
+                <option name="recommendation">Choose...</option>
+                <option value="Yes" name="recommendation" selected>Yes</option>
+                <option value="No" name="recommendation">No</option>
+                <option value="Maybe" name="recommendation">Maybe</option>
+              </select>
+            </div>
+            {% elif internship.recommendation == "No" %}
+            <div class="input-group mb-3">
+              <select
+                class="custom-select"
+                name="recommendation"
+                id="inputGroupSelect02"
+              >
+                <option name="recommendation">Choose...</option>
+                <option value="Yes" name="recommendation">Yes</option>
+                <option value="No" name="recommendation" selected>No</option>
+                <option value="Maybe" name="recommendation">Maybe</option>
+              </select>
+            </div>
+            {% elif internship.recommendation == "Maybe" %}
+            <div class="input-group mb-3">
+              <select
+                class="custom-select"
+                name="recommendation"
+                id="inputGroupSelect02"
+              >
+                <option name="recommendation">Choose...</option>
+                <option value="Yes" name="recommendation">Yes</option>
+                <option value="No" name="recommendation">No</option>
+                <option value="Maybe" name="recommendation" selected>
+                  Maybe
+                </option>
+              </select>
+            </div>
+            {% else%}
+            <div class="input-group mb-3">
+              <select
+                class="custom-select"
+                name="recommendation"
+                id="inputGroupSelect02"
+              >
+                <option selected name="recommendation">Choose...</option>
+                <option value="Yes" name="recommendation">Yes</option>
+                <option value="No" name="recommendation">No</option>
+                <option value="Maybe" name="recommendation">Maybe</option>
+              </select>
+            </div>
+            {% endif %}
+            <div class="form-row">
+              <label
+                >Rate the Work Environment
+                <span style="color: red">(required)</span></label
+              >
+              <input
+                name="workenv"
+                type="number"
+                min="1"
+                max="5"
+                class="form-control"
+                placeholder="1 to 5"
+                value="{{internship.workenv}}"
+              />
+            </div>
+
+            <div class="form-row">
+              <label>Other Feedback for the Company</label>
+              <input
+                name="feedback"
+                type="text"
+                class="form-control"
+                placeholder="related to dinning, exposure, etc"
+                value="{{internship.feedback}}"
+              />
+            </div>
+          </section>
+
+          <h4></h4>
+          <section>
+            <svg
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 130.2 130.2"
+            >
+              <circle
+                class="path circle"
+                fill="none"
+                stroke="#73AF55"
+                stroke-width="6"
+                stroke-miterlimit="10"
+                cx="65.1"
+                cy="65.1"
+                r="62.1"
+              />
+              <polyline
+                class="path check"
+                fill="none"
+                stroke="#73AF55"
+                stroke-width="6"
+                stroke-linecap="round"
+                stroke-miterlimit="10"
+                points="100.2,40.2 51.5,88.8 29.8,67.5 "
+              />
+            </svg>
+            <p><br /></p>
+            <div class="lastbtndiv">
+              <!-- <div class="form-group"> -->
+              {% if current_user.role == "admin" %}
+              <input
+                class="lastsubmit"
+                type="submit"
+                formaction="/updateinternship/{{internship.id}}/{{user.id}}"
+                class="btnContact"
+                value="SUBMIT RECORD"
+              />
+              {% else %}
+              <input
+                class="lastsubmit"
+                type="submit"
+                formaction="/updateinternship/{{internship.id}}"
+                class="btnContact"
+                value="SUBMIT RECORD"
+              />
+              {% endif %}
+              <!-- </div> -->
+            </div>
+          </section>
+        </div>
+      </form>
+    </div>
+
+    <div
+      class="container-fluid pb-0 mb-0 justify-content-center text-light"
+      style="background-color: #151226"
+    >
+      <footer>
+        <div class="row my-5 justify-content-center py-5">
+          <div class="col-11">
+            <div class="row">
+              <div class="col-xl-8 col-md-4 col-sm-4 col-12 my-auto mx-auto a">
+                <h3 class="text-muted mb-md-0 mb-5 bold-text">
+                  Internship Portal
+                </h3>
+              </div>
+              <div class="col-xl-2 col-md-4 col-sm-4 col-12">
+                <h6 class="mb-3 mb-lg-4 bold-text"><b>Links</b></h6>
+                <ul class="list-unstyled">
+                  <li><a href="/">Home</a></li>
+                  <li><a href="/allblogs">Login</a></li>
+                  <li><a href="/news">Contact Us</a></li>
+                </ul>
+              </div>
+              <div class="col-xl-2 col-md-4 col-sm-4 col-12">
+                <h6 class="mb-3 mb-lg-4 text-muted bold-text mt-sm-0 mt-5">
+                  <b>ADDRESS</b>
+                </h6>
+                <p class="mb-1">VIT</p>
+                <p>Wadala, Mumbai</p>
+              </div>
+            </div>
+            <div class="row">
+              <div
+                class="
+                  col-xl-8 col-md-4 col-sm-4 col-auto
+                  my-md-0
+                  mt-5
+                  order-sm-1 order-3
+                  align-self-end
+                "
+              >
+                <p class="social text-muted mb-0 pb-0 bold-text">
+                  <span class="mx-2"
+                    ><i class="fa fa-facebook" aria-hidden="true"></i
+                  ></span>
+                  <span class="mx-2"
+                    ><i class="fa fa-linkedin-square" aria-hidden="true"></i
+                  ></span>
+                  <span class="mx-2"
+                    ><i class="fa fa-twitter" aria-hidden="true"></i
+                  ></span>
+                  <span class="mx-2"
+                    ><i class="fa fa-instagram" aria-hidden="true"></i
+                  ></span>
+                </p>
+                <small class="rights"><span>&#174;</span>Team VIT </small>
+              </div>
+              <div
+                class="
+                  col-xl-2 col-md-4 col-sm-4 col-auto
+                  order-1
+                  align-self-end
+                "
+              >
+                <h6 class="mt-55 mt-2 text-muted bold-text">
+                  <b>Contact Us</b>
+                </h6>
+                <small>
+                  <span><i class="fa fa-info" aria-hidden="true"></i></span>
+                  <a href="/aboutus">About Us</a></small
+                >
+              </div>
+              <div
+                class="
+                  col-xl-2 col-md-4 col-sm-4 col-auto
+                  order-2
+                  align-self-end
+                  mt-3
+                "
+              >
+                <h6 class="mt-55 mt-2 text-muted bold-text">
+                  <b>Give Your Feedback</b>
+                </h6>
+                <small>
+                  <span><i class="fa fa-envelope" aria-hidden="true"></i></span>
+                  contact@gmail.com</small
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-steps/1.1.0/jquery.steps.min.js"></script>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script>
+      $('a[href$="#finish"]').attr("href", "http://www.google.com");
+    </script>
+    <script src="{{ url_for('static',filename='js/newinternship.js') }}"></script>
+  </body>
+</html>

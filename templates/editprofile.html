@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/css/styles.css" />
+    <link rel="stylesheet" href="../static/css/profile.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    />
+    <title>Internship Portal</title>
+  </head>
+  <body style="background-color: #ffe4e1">
+    <nav class="navbar navbar-expand-lg navbar-red navbar-dark">
+      <div class="wrap"></div>
+      <div class="container-fluid all-show">
+        <a class="navbar-brand" href="#" style="color: #C1C8E4">
+          <img src="..\static\img\VIT.png" width="70" height="30" class="d-inline-block align-top" alt="">
+          VIT Internship Portal 
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="/"><i class="fa fa-home"> Home</i></a>
+            </li>
+
+            {% if current_user.is_authenticated %} 
+            {% if not current_user.role == "admin" %}
+            <li class="nav-item">
+              <a class="nav-link" href="/newinternship"
+                ><i class="fa fa-plus"> New Internship</i></a
+              >
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="/profile/{{current_user.id}}"
+                ><i class="fa fa-user"> User</i></a
+              >
+            </li>
+            {% endif %} 
+            {% endif %} 
+
+            {% if current_user.role == "admin" %}
+            <li class="nav-item">
+              <a class="nav-link" href="/search"
+                ><i class="fa fa-search"> Search</i></a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/dashboard"
+                ><i class="fa fa-upload"> Upload Data</i></a
+              >
+            </li>
+            {% endif %}
+
+            <li class="nav-item">
+              <a class="nav-link" href="/aboutus"
+                ><i class="fa fa-info-circle"> About us</i></a
+              >
+            </li>
+            
+            {% if not current_user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/login"><i class="fa fa-sign-in"> Login</i></a>
+            </li>
+            {% endif %}
+            
+            {% if current_user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="/logout"
+                ><i class="fa fa-sign-out"> Logout</i></a
+              >
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container emp-profile">
+      <form method="post">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="profile-head">
+              <h5>{{user.fullname}}</h5>
+              <h6>Vidyalankar Institute of Technology</h6>
+
+              <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                  <a
+                    class="nav-link active"
+                    id="home-tab"
+                    data-toggle="tab"
+                    href="#home"
+                    role="tab"
+                    aria-controls="home"
+                    aria-selected="true"
+                    >About</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link"
+                    id="profile-tab"
+                    data-toggle="tab"
+                    href="#profile"
+                    role="tab"
+                    aria-controls="profile"
+                    aria-selected="false"
+                    >Internships</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <input
+              type="submit"
+              class="profile-edit-btn"
+              name="btnAddMore"
+              value="Download Record"
+              style="background-color: #151226; color: #fff"
+            />
+            <p><br/></p>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-md-8">
+            <div class="tab-content profile-tab" id="myTabContent">
+              <div
+                class="tab-pane fade show active"
+                id="home"
+                role="tabpanel"
+                aria-labelledby="home-tab"
+              >
+                <div class="row">
+                  <div class="col-md-6">
+                    <label>Roll Number</label>
+                  </div>
+                  <div class="col-md-6">
+                    <input type="text" name="rollno" value="{{user.rollno}}"/> 
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <label>Full Name</label>
+                  </div>
+                  <div class="col-md-6">
+                    <input type="text" name="fullname" value="{{user.fullname}}"/> 
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <label>Email</label>
+                  </div>
+                  <div class="col-md-6">
+                    <input type="text" name="email" value="{{user.email}}"/> 
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <label>Mobile Number</label>
+                  </div>
+                  <div class="col-md-6">
+                    <input type="text" name="mobileno" value="{{user.mobileno}}"/> 
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <label>Branch</label>
+                  </div>
+                  <div class="col-md-6">
+                    <input type="text" name="dept" value="{{user.dept}}"/> 
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <label>Division</label>
+                  </div>
+                  <div class="col-md-6">
+                    <input type="text" name="div" value="{{user.div}}"/> 
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <label>Year</label>
+                  </div>
+                  <div class="col-md-6">
+                    <input type="text" name="year" value="{{user.year}}"/> 
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <label>Batch</label>
+                  </div>
+                  <div class="col-md-6">
+                    <input type="text" name="batch" value="{{user.batch}}"/> 
+                  </div>
+                </div>
+
+                <p>
+                    <br>
+                </p>
+
+                <div class="row">
+                <button class=" col-5 editbtn" formaction="/editprofile/{{user.id}}" value="Edit">Update Profile</button>
+              </div>
+              </div>
+
+              <div
+                class="tab-pane fade"
+                id="profile"
+                role="tabpanel"
+                aria-labelledby="profile-tab"
+              >
+              <div class="container">
+                <div class="row">
+
+                  {% if not internships %}
+                    {% if current_user.role == "admin" %}
+                    <a href='/newinternship/{{user.id}}' class="btn btn-primary" style="background-color:#151226; color: #fff;">Add New Internship</a>
+                    {% else %}
+                    <a href='/newinternship' class="btn btn-primary" style="background-color:#151226; color: #fff;">Add New Internship</a>
+                    {% endif %}
+                  {% else %}
+                    {% for internship in internships %}
+                      <div class="card text-center col-11" style="margin: 3%;">
+                          <div class="card-header" style="background-color: #fff;color: #151226; font-weight: bold;">
+                            Comapany Name : {{internship.companyname}}
+                          </div>
+                          <div class="card-body">
+                            <h5 class="card-title" style="font-style: italic;">Domain : {{internship.domain}}</h5>
+                            <p class="card-text" style="color: black;">
+                                Source of Internship - {{internship.source}}
+                                <br>
+                                Position - {{internship.position}}
+                                <br>
+                                Year of Study - {{internship.yearofstudy}}
+                            </p>
+
+                            {% if internship.completioncert or internship.completioncert_link %}
+                            <a href='/downloadcompletioncert/{{internship.id}}' class="btn btn-primary" style="background-color:#266150; color: #fff;">Completion Certicate</a>
+                            {% endif %}
+
+                            {% if internship.offerletter or internship.offerletter_link %}
+                            <a href='/downloadofferletter/{{internship.id}}' class="btn btn-primary" style="background-color:#266150; color: #fff;">Offerletter/Email Screenshot</a>
+                            {% endif %}
+
+                            {% if current_user.role == "admin" %}
+                            <a href='/updateinternship/{{internship.id}}/{{user.id}}' class="btn btn-primary" style="background-color:blue; color: #fff;">EDIT</a>
+                            {% else %}
+                            <a href='/updateinternship/{{internship.id}}' class="btn btn-primary" style="background-color:blue; color: #fff;">EDIT</a>
+                            {% endif %}
+
+                          </div>
+                          <div class="card-footer text-muted" style="background-color: #fff;color: #266150;">
+                            {{internship.startdate}} - {{internship.enddate}}
+                          </div>
+                        </div>
+                        {% endfor %}
+                      {% endif %}
+                    </div>
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </form>
+    </div>
+
+    <div class="container-fluid pb-0 mb-0 justify-content-center text-light" style="background-color: #151226;color: #fff;">
+      <footer>
+        <div class="row my-5 justify-content-center py-5">
+          <div class="col-11">
+            <div class="row ">
+              <div class="col-xl-8 col-md-4 col-sm-4 col-12 my-auto mx-auto a">
+                <h3 class="mb-md-0 mb-5 bold-text" style="color: #fff;"> VIT Internship Portal</h3>
+              </div>
+              <div class="col-xl-2 col-md-4 col-sm-4 col-12">
+                <h6 class="mb-3 mb-lg-4 bold-text "><b>Links</b></h6>
+                <ul class="list-unstyled">
+                  <li><a href="/">Home</a></li>
+                  <li><a href="/login">Login</a></li>
+                  <li><a href="/aboutus">About Us</a></li>
+                </ul>
+              </div>
+              <div class="col-xl-2 col-md-4 col-sm-4 col-12">
+                <h6 class="mb-3 mb-lg-4 bold-text mt-sm-0 mt-5" style="color: #ffffff;"><b>ADDRESS</b></h6>
+                <p class="mb-1">VIT</p>
+                <p>Wadala, Mumbai</p>
+              </div>
+            </div>
+            <div class="row ">
+              <div class="col-xl-8 col-md-4 col-sm-4 col-auto my-md-0 mt-5 order-sm-1 order-3 align-self-end">
+                <p class="social text-muted mb-0 pb-0 bold-text">
+                   <span class="mx-2"><i class="fa fa-facebook" aria-hidden="true" style="color: #ffffff;"></i></span>
+                   <span class="mx-2"><i class="fa fa-linkedin-square" aria-hidden="true" style="color: #ffffff;"></i></span>
+                   <span class="mx-2"><i class="fa fa-twitter" aria-hidden="true" style="color: #ffffff;"></i></span>
+                   <span class="mx-2"><i class="fa fa-instagram" aria-hidden="true" style="color: #ffffff;"></i></span>
+                 </p>
+                 <small class="rights"><span>&#174;</span>Team VIT </small>
+              </div>
+              <div class="col-xl-2 col-md-4 col-sm-4 col-auto order-1 align-self-end ">
+                <h6 class="mt-55 mt-2  bold-text" style="color: #ffffff;"><b>Contact Us</b></h6><small>
+                   <span><i class="fa fa-info" aria-hidden="true"></i></span> <a href="/aboutus">About Us</a></small>
+              </div>
+              <div class="col-xl-2 col-md-4 col-sm-4 col-auto order-2 align-self-end mt-3 ">
+                <h6 class="mt-55 mt-2 bold-text" style="color: #ffffff;"><b>Give Your Feedback</b></h6><small>
+                   <span><i class="fa fa-envelope" aria-hidden="true"></i></span> contact@gmail.com</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

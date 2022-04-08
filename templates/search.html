@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static',filename='css/styles.css') }}"
+    />
+    <link rel="stylesheet" href="../static/css/search.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    />
+    <title>Internship Portal</title>
+  </head>
+  <body style="background-color: #ffe4e1">
+    <nav class="navbar navbar-expand-lg navbar-red navbar-dark">
+      <div class="wrap"></div>
+      <div class="container-fluid all-show">
+        <a class="navbar-brand" href="/" style="color: #c1c8e4">
+          <img
+            src="..\static\img\VIT.png"
+            width="70"
+            height="30"
+            class="d-inline-block align-top"
+            alt=""
+          />
+          VIT Internship Portal
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="/"><i class="fa fa-home"> Home</i></a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="/search"
+                ><i class="fa fa-search"> Search</i></a
+              >
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/dashboard"
+                ><i class="fa fa-upload"> Upload Data</i></a
+              >
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="/aboutus"
+                ><i class="fa fa-info-circle"> About Us</i></a
+              >
+            </li>
+
+            {% if not current_user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/admin/login"
+                ><i class="fa fa-sign-in"> Login</i></a
+              >
+            </li>
+            {% endif %} {% if current_user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="/logout"
+                ><i class="fa fa-sign-out"> Logout</i></a
+              >
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="row">
+        <div
+          class="s009 col-12 col-lg-6"
+          style="
+            background-color: #ffe4e1;
+            top: 100px;
+            margin-top: 0px;
+            padding-top: 0px;
+          "
+        >
+          <form method="POST">
+            <div class="inner-form">
+              <div class="basic-search">
+                <div class="input-field">
+                  <input
+                    id="companyname"
+                    type="text"
+                    placeholder="Type Company Name or Domain"
+                    name="searchname"
+                    oninput="handleChange()"
+                  />
+                  <div class="icon-wrap">
+                    <svg
+                      class="svg-inline--fa fa-search fa-w-16"
+                      fill="#ccc"
+                      aria-hidden="true"
+                      data-prefix="fas"
+                      data-icon="search"
+                      role="img"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                    >
+                      <path
+                        d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"
+                      ></path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div class="advance-search">
+                <span class="desc">ADVANCED SEARCH</span>
+                <div class="row">
+                  <div class="input-field col-12 col-sm-4">
+                    <div class="input-select">
+                      <select
+                        id="dept"
+                        data-trigger=""
+                        name="dept"
+                        onchange="handleChange()"
+                      >
+                        <option placeholder="" name="dept" value="">
+                          Department
+                        </option>
+                        <option value="CMPN" name="dept">CMPN</option>
+                        <option value="IT" name="dept">IT</option>
+                        <option value="EXTC" name="dept">EXTC</option>
+                        <option value="ETRX" name="dept">ETRX</option>
+                        <option value="BIOMED" name="dept">BIOMED</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="input-field col-12 col-sm-4">
+                    <div class="input-select">
+                      <select
+                        id="div"
+                        data-trigger=""
+                        name="div"
+                        onchange="handleChange()"
+                      >
+                        <option placeholder="" value="" name="div">
+                          Division
+                        </option>
+                        <option value="A" name="div">A</option>
+                        <option value="B" name="div">B</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="input-field col-12 col-sm-4">
+                    <div class="input-select">
+                      <select
+                        id="batch"
+                        data-trigger=""
+                        name="batch"
+                        onchange="handleChange()"
+                      >
+                        <option placeholder="" value="" name="batch">
+                          Batch
+                        </option>
+                        <option value="2021" name="batch">2021</option>
+                        <option value="2022" name="batch">2022</option>
+                        <option value="2023" name="batch">2023</option>
+                        <option value="2024" name="batch">2024</option>
+                        <option value="2025" name="batch">2025</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row second">
+                  <div class="input-field col-12 col-sm-6">
+                    <div class="input-select">
+                      <select
+                        id="year"
+                        data-trigger=""
+                        name="satisfied"
+                        onchange="handleChange()"
+                      >
+                        <option placeholder="" value="" name="satisfied">
+                          Student Satisfaction
+                        </option>
+                        <option value="Yes" name="satisfied">Satisfied</option>
+                        <option value="No" name="satisfied">
+                          Not Satisfied
+                        </option>
+                        <option value="Partly" name="satisfied">
+                          Partly Satified
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="input-field col-12 col-sm-6">
+                    <div class="input-select">
+                      <select
+                        id="domain"
+                        data-trigger=""
+                        name="domain"
+                        onchange="handleChange()"
+                      >
+                        <option selected value="" name="domain">Domain</option>
+                        <option value="Web Development" name="domain">
+                          Web Development
+                        </option>
+                        <option value="Machine Learning" name="domain">
+                          Machine Learning
+                        </option>
+                        <option value="App Development" name="domain">
+                          App Development
+                        </option>
+                        <option value="Content Creation" name="domain">
+                          Content Creation
+                        </option>
+                        <option value="Sales and Marketing" name="domain">
+                          Sales and Marketing
+                        </option>
+                        <option value="Teaching" name="domain">Teaching</option>
+                        <option value="Programming" name="domain">
+                          Programming
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row second">
+                  <div class="input-field-date col-12 col-sm-6">
+                    <label for="startdate">Start Date</label>
+                    <input
+                      id="startdate"
+                      type="date"
+                      name="startdate"
+                      onchange="handleChange()"
+                    />
+                  </div>
+
+                  <div class="input-field-date col-12 col-sm-6">
+                    <label for="enddate">End Date</label>
+                    <input
+                      type="date"
+                      id="enddate"
+                      name="enddate"
+                      onchange="handleChange()"
+                    />
+                  </div>
+                </div>
+
+                <div class="row second">
+                  <div class="input-field col-12">
+                    <label for="rollno">Roll Number</label>
+                    <input
+                      id="rollno"
+                      type="text"
+                      name="rollno"
+                      onchange="handleChange()"
+                      style="background-color: #ffe4e1"
+                    />
+                  </div>
+                </div>
+
+                <div class="row third">
+                  <div class="input-field">
+                    <div class="group-btn">
+                      <button type="reset" class="btn-delete" id="delete">
+                        RESET
+                      </button>
+                      <button
+                        type="submit"
+                        formaction="/search"
+                        class="btn-search"
+                        style="background-color: #151226"
+                        onclick=""
+                      >
+                        SEARCH
+                      </button>
+                      <button
+                        id="btn-Download"
+                        type="submit"
+                        formaction="/customexport"
+                        class="btn-download"
+                        style="background-color: #151226"
+                        onclick=""
+                      >
+                        Download List
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- List of Students -->
+
+        <div
+          class="
+            row
+            d-flex
+            justify-content-center
+            mt-100
+            mb-100
+            col-12 col-lg-6
+          "
+        >
+          <div class="col-12 col-lg-12">
+            <div class="card">
+              <a class="downloadlistbutton" href="/exportall"
+                >Download All Students List</a
+              >
+              <div class="card-body text-center">
+                <h4 class="card-title m-b-0">Students</h4>
+              </div>
+              {% if s %}
+              <ul class="list-style-none">
+                <!-- First -->
+                {% for user in students %}
+                <li class="d-flex no-block card-body">
+                  <i class="fa fa-check-circle w-30px m-t-5"></i>
+                  <div>
+                    <a
+                      href="/otherprofile/{{user.id}}"
+                      class="m-b-0 font-medium p-0"
+                      data-abc="true"
+                      >{{user.fullname}}</a
+                    >
+                    <div class="Company-Names">
+                      {% for Internship in internships %} {% if user.id ==
+                      Internship.user_id %}
+                      <div class="text-muted">
+                        Company name - {{Internship.companyname}}
+                      </div>
+                      <div class="text-muted">
+                        Domain - {{Internship.domain}}
+                      </div>
+                      <hr />
+                      {% endif %} {% endfor %}
+                    </div>
+                  </div>
+                </li>
+                {% endfor %}
+                <!-- End First -->
+              </ul>
+              {% else %}
+              <h5 style="font-style: italic">No Students Found</h5>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      <br />
+    </p>
+
+    <script src="../static/js/extention/choices.js"></script>
+    <script>
+      const customSelects = document.querySelectorAll("select");
+      const deleteBtn = document.getElementById("delete");
+      const choices = new Choices("select", {
+        searchEnabled: false,
+        itemSelectText: "",
+        removeItemButton: true,
+      });
+      deleteBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        const deleteAll = document.querySelectorAll(".choices__button");
+        for (let i = 0; i < deleteAll.length; i++) {
+          deleteAll[i].click();
+        }
+      });
+    </script>
+
+    <div
+      class="container-fluid pb-0 mb-0 justify-content-center text-light"
+      style="background-color: #151226; color: #fff"
+    >
+      <footer>
+        <div class="row my-5 justify-content-center py-5">
+          <div class="col-11">
+            <div class="row">
+              <div class="col-xl-8 col-md-4 col-sm-4 col-12 my-auto mx-auto a">
+                <h3 class="mb-md-0 mb-5 bold-text" style="color: #fff">
+                  VIT Internship Portal
+                </h3>
+              </div>
+              <div class="col-xl-2 col-md-4 col-sm-4 col-12">
+                <h6 class="mb-3 mb-lg-4 bold-text"><b>Links</b></h6>
+                <ul class="list-unstyled">
+                  <li><a href="/">Home</a></li>
+                  <li><a href="/login">Login</a></li>
+                  <li><a href="/aboutus">About Us</a></li>
+                </ul>
+              </div>
+              <div class="col-xl-2 col-md-4 col-sm-4 col-12">
+                <h6
+                  class="mb-3 mb-lg-4 bold-text mt-sm-0 mt-5"
+                  style="color: #ffffff"
+                >
+                  <b>ADDRESS</b>
+                </h6>
+                <p class="mb-1">VIT</p>
+                <p>Wadala, Mumbai</p>
+              </div>
+            </div>
+            <div class="row">
+              <div
+                class="
+                  col-xl-8 col-md-4 col-sm-4 col-auto
+                  my-md-0
+                  mt-5
+                  order-sm-1 order-3
+                  align-self-end
+                "
+              >
+                <p class="social text-muted mb-0 pb-0 bold-text">
+                  <span class="mx-2"
+                    ><i
+                      class="fa fa-facebook"
+                      aria-hidden="true"
+                      style="color: #ffffff"
+                    ></i
+                  ></span>
+                  <span class="mx-2"
+                    ><i
+                      class="fa fa-linkedin-square"
+                      aria-hidden="true"
+                      style="color: #ffffff"
+                    ></i
+                  ></span>
+                  <span class="mx-2"
+                    ><i
+                      class="fa fa-twitter"
+                      aria-hidden="true"
+                      style="color: #ffffff"
+                    ></i
+                  ></span>
+                  <span class="mx-2"
+                    ><i
+                      class="fa fa-instagram"
+                      aria-hidden="true"
+                      style="color: #ffffff"
+                    ></i
+                  ></span>
+                </p>
+                <small class="rights"><span>&#174;</span>Team VIT </small>
+              </div>
+              <div
+                class="
+                  col-xl-2 col-md-4 col-sm-4 col-auto
+                  order-1
+                  align-self-end
+                "
+              >
+                <h6 class="mt-55 mt-2 bold-text" style="color: #ffffff">
+                  <b>Contact Us</b>
+                </h6>
+                <small>
+                  <span><i class="fa fa-info" aria-hidden="true"></i></span>
+                  <a href="/aboutus">About Us</a></small
+                >
+              </div>
+              <div
+                class="
+                  col-xl-2 col-md-4 col-sm-4 col-auto
+                  order-2
+                  align-self-end
+                  mt-3
+                "
+              >
+                <h6 class="mt-55 mt-2 bold-text" style="color: #ffffff">
+                  <b>Give Your Feedback</b>
+                </h6>
+                <small>
+                  <span><i class="fa fa-envelope" aria-hidden="true"></i></span>
+                  contact@gmail.com</small
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <!-- <script>
+      function customexport() {
+        var dept = document.getElementById("dept").value;
+        var div = document.getElementById("div").value;
+        var year = document.getElementById("year").value;
+        var companyname = document.getElementById("companyname").value;
+        var startdate = document.getElementById("startdate").value;
+        var enddate = document.getElementById("enddate").value;
+        const searchdata = [dept, div, year, companyname, startdate, enddate];
+        const URL = "/customexport";
+        const xhr = new XMLHttpRequest();
+        sender = JSON.stringify(searchdata);
+
+        xhr.onreadystatechange = function () {
+          // listen for state changes
+          if (xhr.readyState == 4 && xhr.status == 200) {
+            // when completed we can move away
+            window.location.href = "/customexport";
+          }
+        };
+
+        xhr.open("POST", URL);
+        xhr.send(sender);
+      }
+    </script> -->
+    <script>
+      let cn = document.getElementById("companyname");
+
+      dept.onchange = handleChange;
+
+      function handleChange() {
+        document.getElementById("btn-Download").style.visibility = "visible";
+      }
+
+      if (document.getElementById("companyname").value == null) {
+        document.getElementById("btn-Download").style.visibility = "hidden";
+        console.log("This Works");
+      }
+
+      console.log("Department:", typeof dept);
+    </script>
+  </body>
+</html>

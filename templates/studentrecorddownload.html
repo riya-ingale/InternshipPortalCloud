@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Record</title>
+    <style>
+        body{  
+        font-family: Arial, Helvetica, sans-serif;
+        }
+        table {
+          border-collapse: collapse;
+          width: 100%;
+        }
+        
+        th, td {
+          text-align: left;
+          padding: 8px;
+        }
+        
+        </style>
+</head>
+<body>
+    <h2 style="font-style: italic;">Student General Details</h2>
+    <div style="overflow-x:auto; font-size: large;">
+    <table class="table">
+        <tbody>
+          <tr>
+            <th scope="row">Full Name</th>
+            <td>{{student.fullname}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Roll Number</th>
+            <td>{{student.rollno}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Email</th>
+            <td>{{student.email}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Mobile Number</th>
+            <td>{{student.mobileno}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Department</th>
+            <td>{{student.dept}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Division</th>
+            <td>{{student.div}}</td>
+          </tr>
+          <tr>
+            <th scope="row">Year of Study</th>
+            <td>{{student.year}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <hr>
+    <h2 style="font-style: italic;">Student Internship Details</h2>
+    {% for internship in internships %}
+    <div style="font-size:large">
+    <h3>{{internship.companyname}}</h3>
+        <p>Domain - {{internship.domain}}
+            <br>
+            Position - {{internship.position}}
+            <br>
+            Skills Acquired - {{internship.skill_acquired}}
+            <br>
+            Start Date - {{internship.startdate}}
+            <br>
+            End Date - {{internship.enddate}}
+            <br>
+            {% if internship.companyrepresentative_name  %}
+            Company Representative - {{internship.companyrepresentative_name}}
+            {% endif %}
+            <br>
+            {% if internship.companyrepresentative_contact %}
+            Company Representative Contact - {{internship.companyrepresentative_contact}}
+            <br>
+            {% endif %}
+            
+            Source of Internship - {{internship.source}}
+            <br>
+
+            <p style="font-size:large">FEEDBACK</p>
+            {% if internship.feedback or internship.satisfied or internship.workenv or internship.recommendation or internship.typeofinternship %}
+            
+            {% if internship.feedback  %}
+            Feedback - {{internship.feedback}}
+            <br>
+            {% endif %}
+            
+            {% if internship.satisfied %}
+            Satisfied with the Internship? - {{internship.satisfied}}
+            <br>
+            {% endif %}
+            
+            {% if internship.typeofinternship %}
+            Type of Internship? - {{internship.typeofinternship}}
+            <br>
+            {% endif %}
+            
+
+            {% if internship.workenv %}
+            Rate the Work environment (out of 5) - {{internship.workenv}}
+            <br>
+            {% endif %}
+            
+            {% if internship.recommendation %}
+            Would you recommmed this company to a Friend? - {{internship.recommendation}}
+            <br>
+            {% endif %}
+
+            {% else %}
+            No Feedback Given 
+            {% endif %}
+            
+
+        </p>
+    </div>
+    {% endfor %}
+    
+</body>
+</html>
