@@ -9,7 +9,7 @@ import os
 from datetime import datetime
 import pdfkit
 from openpyxl import Workbook, load_workbook
-
+from azure.storage.blob import BlobServiceClient
 
 app = Flask(__name__)
 
@@ -29,6 +29,17 @@ login_manager.login_message = "You need to Login first"
 @login_manager.user_loader
 def load_user(user_id):
     return Users.query.get(int(user_id))
+
+
+connect_str = "DefaultEndpointsProtocol=https;AccountName=internshipportal;AccountKey=HVWVdBiguPzEbbgMssHHXJhaoYwcpJxQgW3NII6o28E/AmWg1k4b8etLA+b9B06lD1HJ77Hudh91+AStPszQLg==;EndpointSuffix=core.windows.net" # retrieve the connection string from the environment variable
+container_name = "files" # container name in which images will be store in the storage account
+
+blob_service_client = BlobServiceClient.from_connection_string(conn_str=connect_str) # create a blob service client to interact with the storage account
+try:
+    container_client = blob_service_client.get_container_client(container=container_name) # get container client to interact with the container in which images will be stored
+    container_client.get_container_properties() # get properties of the container to force exception to be thrown if container does not exist
+except Exception as e:
+    container_client = blob_service_client.create_container(container_name) # create a container in the storage account if it does not exist
 
 
 class Users(UserMixin, db.Model):
@@ -339,6 +350,21 @@ def newinternship():
 
         offerletter = request.files['offerletter']
         completioncert = request.files['completioncert']
+
+        try:
+            offername = str(current_user.id)+'-'+str(companyname)+'-'+"offerletter"
+            container_client.upload_blob(offername, offerletter) 
+
+            completionname = str(current_user.id)+'-' + str(companyname)+'-'+"completioncert"
+            container_client.upload_blob(completionname, completioncert)
+            # upload the files to the container using the filename as the blob name
+            print("Uploaded file to blob storage")
+
+        except Exception as e:
+            print(e)
+            return "Couldn't Upload your files to the Website"
+
+
         if offerletter:
             if len(offerletter.filename) > 0:
                 offerletter_filename = offerletter.filename
@@ -348,8 +374,10 @@ def newinternship():
                 completioncert_filename = completioncert.filename
                 completioncert = completioncert.read()
 
-        completioncert_link = request.form.get('completioncert_link')
-        offerletter_link = request.form.get('offerletter_link')
+        offer_blob_client = container_client.get_blob_client(blob=offername) 
+        completion_blob_client = container_client.get_blob_client(blob=completionname) 
+        completioncert_link = completion_blob_client.url
+        offerletter_link = offer_blob_client.url
 
         feedback = request.form.get('feedback')
         workenv = request.form.get('workenv')
@@ -357,8 +385,8 @@ def newinternship():
         recommendation = request.form.get('recommendation')
         typeofinternship = request.form.get('type')
 
-        new_internship = Internships(user_id=current_user.id, companyname=companyname, domain=domain, companyrepresentative_name=companyrepresentative_name, companyrepresentative_contact=companyrepresentative_contact, source=source, position=position, skills_acquired=skills_acquired, startdate=startdate, enddate=enddate, yearofstudy=yearofstudy,
-                                     offerletter=offerletter, offerletter_filename=offerletter_filename, completioncert=completioncert, completioncert_filename=completioncert_filename, completioncert_link=completioncert_link, offerletter_link=offerletter_link, feedback=feedback, workenv=workenv, satisfied=satisfied, recommendation=recommendation, typeofinternship=typeofinternship)
+        new_internship = Internships(user_id=current_user.id, companyname=companyname, domain=domain, companyrepresentative_name=companyrepresentative_name, companyrepresentative_contact=companyrepresentative_contact, source=source, position=position, skills_acquired=skills_acquired, startdate=startdate, enddate=enddate, yearofstudy=yearofstudy,offerletter=offerletter, offerletter_filename=offerletter_filename, completioncert=completioncert, completioncert_filename=completioncert_filename, completioncert_link=completioncert_link, offerletter_link=offerletter_link, feedback=feedback, workenv=workenv, satisfied=satisfied, recommendation=recommendation, typeofinternship=typeofinternship)
+
         db.session.add(new_internship)
         db.session.commit()
         flash("Record Added!")
@@ -389,6 +417,10 @@ def newinternshipadmin(user_id):
 
         offerletter = request.files['offerletter']
         completioncert = request.files['completioncert']
+
+        
+
+
         if offerletter:
             if len(offerletter.filename) > 0:
                 offerletter_filename = offerletter.filename
@@ -400,6 +432,8 @@ def newinternshipadmin(user_id):
 
         completioncert_link = request.form.get('completioncert_link')
         offerletter_link = request.form.get('offerletter_link')
+
+
 
         feedback = request.form.get('feedback')
         workenv = request.form.get('workenv')
@@ -931,6 +965,30 @@ def excelformatdownload():
 @app.route('/chat')
 def chat():
     return render_template('chat.html')
+
+
+@app.route('/uploadfiles', methods=['GET', 'POST'])
+def uploadfiles():
+    if request.method == "POST":
+        print('Recieved POST request')
+        try:
+            file = request.files['file']
+            print("file - ",file)
+            container_client.upload_blob(file.filename, file) 
+            # upload the file to the container using the filename as the blob name
+            print("Uploaded file to blob storage")
+        except Exception as e:
+            print(e)
+            return "Couldn't Upload your file to the Website"
+        return f"Uploaded {file.filename}"
+    elif request.method == "GET":
+        return render_template('uploadfiles.html')    
+
+@app.route('/getfiles')
+def getfiles():
+    blob_client = container_client.get_blob_client(blob="104-Meta-offerletter")
+    # get blob client to interact with the blob and get blob url
+    return render_template('getfiles.html', file = blob_client.url)
 
 if __name__ == '__main__':
     db.create_all()
