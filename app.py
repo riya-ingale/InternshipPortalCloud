@@ -12,6 +12,14 @@ import pdfkit
 from openpyxl import Workbook, load_workbook
 from azure.storage.blob import BlobServiceClient
 
+from MLStudioModels.data_clean import dataclean
+from MLStudioModels.similaritymatrix import similarity_matrix
+from MLStudioModels.simtfidf import similarity_matrix_wo_tfidf
+from MLStudioModels.makereco import make_recs
+import pandas as pd
+import numpy as np
+import re
+
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = os.urandom(24)
@@ -89,6 +97,21 @@ class Internships(db.Model):
     recommendation = db.Column(db.Text)
     typeofinternship = db.Column(db.Text)
 
+
+class ScrappedInternships(db.Model):
+    iid = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer)
+    title = db.Column(db.Text)
+    company = db.Column(db.Text)
+    location = db.Column(db.Text)
+    duration = db.Column(db.Text)
+    stipend = db.Column(db.Text)
+    perks = db.Column(db.Text)
+    numberofopenings= db.Column(db.Integer)
+    link = db.Column(db.Text)
+    skills = db.Column(db.Text)
+    apply_by = db.Column(db.Text)
+    applicants = db.Column(db.Text)
 
 @app.route('/')
 def index():
@@ -997,7 +1020,43 @@ def recommend():
     if request.method =="POST":
         search = request.form.get('search')
         return f"This is what you searched - {search}"
-    return render_template('recommendation.html')
+
+    records = ScrappedInternships.query.all()
+    return render_template('recommendation.html', records = records)
+
+
+# @app.route('/addcsvtodb')
+# def addcsvtodb():
+#     df = pd.read_csv('MLStudioModels/internshala_dataset.csv')
+#     df=dataclean(df)
+#     records = df.to_dict('records')
+#     for r in records:
+#         newrecord = ScrappedInternships(id = r['id'], title = r['Title'], company = r['Company'], location = r['Location'], duration= r['Duration'], stipend = r['Stipend'], perks = r['Perks'],numberofopenings = r['Number of Openings'], link = r['Link'], skills = r['Skills Required'] ,apply_by = r['Apply By'], applicants = r['Applicants'])
+#         db.session.add(newrecord)
+#     db.session.commit()
+#     return "Done"
+
+@app.route('/internshipdetails/<int:internship_id>', methods = ['GET','POST'])
+def internshipdetails(internship_id):
+    internship = ScrappedInternships.query.filter_by(id = internship_id).first()
+    df = pd.read_csv('MLStudioModels/internshala_dataset.csv')
+    df=dataclean(df)
+    
+    sim = similarity_matrix(df)
+    sim.to_csv('MLStudioModels/internshala_recommendation_matrix.csv', index = True)
+    sim_1 = similarity_matrix_wo_tfidf(df)
+    sim_1.to_csv('MLStudioModels/internshala_recommendation_matrix_wo_tfidf.csv', index = True)
+    
+    sim = pd.read_csv('MLStudioModels/internshala_recommendation_matrix.csv') 
+    sim_1 = pd.read_csv('MLStudioModels/internshala_recommendation_matrix_wo_tfidf.csv')
+
+    sim.set_index('id', inplace = True)
+    sim_1.set_index('id', inplace = True)
+    
+    df[df.id == internship_id]
+    records = make_recs(sim, df, internship_id, 3)
+    records = records.to_dict('records')
+    return render_template('internshipdetails.html', internship = internship, records = records)
 
 if __name__ == '__main__':
     db.create_all()

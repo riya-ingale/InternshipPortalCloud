@@ -5,6 +5,7 @@ body {
 .card {
     border: none;
     border-radius:30px;
+    padding: 5px;
 }
 
 .c-details span {
@@ -27,6 +28,7 @@ body {
     background-color: #fffbec;
     width: 60px;
     height: 25px;
+    margin-right: 5px;
     padding-bottom: 3px;
     border-radius: 5px;
     display: flex;
@@ -36,12 +38,12 @@ body {
 }
 
 .progress {
-    height: 10px;
+    height: 40px;
     border-radius: 10px
 }
 
 .progress div {
-    background-color: red
+    background-color: #d10047
 }
 
 .text1 {
