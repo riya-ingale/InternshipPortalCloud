@@ -1,3 +1,4 @@
+import re
 from flask import Flask, render_template, request, redirect, session, flash, send_file
 from flask import make_response, session
 from flask_sqlalchemy import SQLAlchemy
@@ -989,6 +990,14 @@ def getfiles():
     blob_client = container_client.get_blob_client(blob="104-Meta-offerletter")
     # get blob client to interact with the blob and get blob url
     return render_template('getfiles.html', file = blob_client.url)
+
+
+@app.route('/recommend', methods=['GET','POST'])
+def recommend():
+    if request.method =="POST":
+        search = request.form.get('search')
+        return f"This is what you searched - {search}"
+    return render_template('recommendation.html')
 
 if __name__ == '__main__':
     db.create_all()
