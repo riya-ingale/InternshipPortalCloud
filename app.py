@@ -1,4 +1,3 @@
-import re
 from flask import Flask, render_template, request, redirect, session, flash, send_file
 from flask import make_response, session
 from flask_sqlalchemy import SQLAlchemy
@@ -11,14 +10,12 @@ from datetime import datetime
 import pdfkit
 from openpyxl import Workbook, load_workbook
 from azure.storage.blob import BlobServiceClient
+import azure.cognitiveservices.speech as speechsdk
 
 from MLStudioModels.data_clean import dataclean
 from MLStudioModels.similaritymatrix import similarity_matrix
-from MLStudioModels.simtfidf import similarity_matrix_wo_tfidf
 from MLStudioModels.makereco import make_recs
 import pandas as pd
-import numpy as np
-import re
 
 app = Flask(__name__)
 
@@ -1019,10 +1016,18 @@ def getfiles():
 def recommend():
     if request.method =="POST":
         search = request.form.get('search')
-        return f"This is what you searched - {search}"
+        result = search.title()
+        cards = ScrappedInternships.query.filter_by(title = search ).all()
+        if cards:    
+            
+            return render_template('recommendation.html',result = result,records = cards )
+        else:
+            
+            return render_template('recommendation.html',result = result, records = None)
 
     records = ScrappedInternships.query.all()
-    return render_template('recommendation.html', records = records)
+    return render_template('recommendation.html', records = records, result = None)
+
 
 
 # @app.route('/addcsvtodb')
@@ -1043,20 +1048,55 @@ def internshipdetails(internship_id):
     df=dataclean(df)
     
     sim = similarity_matrix(df)
-    sim.to_csv('MLStudioModels/internshala_recommendation_matrix.csv', index = True)
-    sim_1 = similarity_matrix_wo_tfidf(df)
-    sim_1.to_csv('MLStudioModels/internshala_recommendation_matrix_wo_tfidf.csv', index = True)
-    
-    sim = pd.read_csv('MLStudioModels/internshala_recommendation_matrix.csv') 
-    sim_1 = pd.read_csv('MLStudioModels/internshala_recommendation_matrix_wo_tfidf.csv')
-
-    sim.set_index('id', inplace = True)
-    sim_1.set_index('id', inplace = True)
+    sim.rename_axis("", axis="columns")
+    sim.rename_axis("", axis="columns")
+    sim = sim.rename_axis("", axis="columns")
+    simrenamed= sim.rename_axis("", axis="index")
+    simrenamed.insert(0, 'id', range(0, 0 + len(simrenamed)))
+    newsim=simrenamed.set_index('id')
     
     df[df.id == internship_id]
-    records = make_recs(sim, df, internship_id, 3)
+    records = make_recs(newsim, df, internship_id, 3)
     records = records.to_dict('records')
     return render_template('internshipdetails.html', internship = internship, records = records)
+
+
+@app.route('/speech')
+def speech():
+    speech_config = speechsdk.SpeechConfig(subscription="760a9b99a4054fee9d25b5130b3e7421", region="eastus")
+    speech_config.speech_recognition_language="en-US"
+
+    #To recognize speech from an audio file, use `filename` instead of `use_default_microphone`:
+    #audio_config = speechsdk.audio.AudioConfig(filename="YourAudioFile.wav")
+    audio_config = speechsdk.audio.AudioConfig(use_default_microphone=True)
+    speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
+
+    print("Speak into your microphone.")
+    speech_recognition_result = speech_recognizer.recognize_once_async().get()
+
+    if speech_recognition_result.reason == speechsdk.ResultReason.RecognizedSpeech:
+        
+        result = speech_recognition_result.text
+        result = result.title()[0:len(result)-1]
+        
+        # result = "{0}".format(result)
+        # result = result+'%'
+        cards = ScrappedInternships.query.filter_by(title = result).all()
+        # cards = ScrappedInternships.query.filter(
+        #     or_(ScrappedInternships.title.like(result), ScrappedInternships.company.like(result),ScrappedInternships.skills.like(result))).all()
+        if cards:    
+            
+            return render_template('recommendation.html',result = result,records = cards )
+        else:
+            
+            return render_template('recommendation.html',result = result, records = None) 
+        
+    elif speech_recognition_result.reason == speechsdk.ResultReason.NoMatch:
+        return render_template('recommendation.html',result=speech_recognition_result.no_match_details)
+
+    elif speech_recognition_result.reason == speechsdk.ResultReason.Canceled:
+        return "Error in recognising text"
+
 
 if __name__ == '__main__':
     db.create_all()
