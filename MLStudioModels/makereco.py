@@ -6,10 +6,6 @@ import nltk
 import pandas as pd
 import numpy as np
 
-from nltk.tokenize import sent_tokenize, word_tokenize
-from nltk.stem import PorterStemmer, WordNetLemmatizer
-from sklearn.feature_extraction.text import TfidfTransformer, CountVectorizer
-import re
 def make_recs(sim, df, i, n):
     '''
     returns a dataframe of top n recommendations, based on the similarity matrix provided and dataframe 

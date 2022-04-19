@@ -5,11 +5,7 @@ import nltk
 
 import pandas as pd
 import numpy as np
-
-from nltk.tokenize import sent_tokenize, word_tokenize
-from nltk.stem import PorterStemmer, WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfTransformer, CountVectorizer
-import re
 from .tokenizelem import tokenize_lem
 def similarity_matrix_w_lem_wo_tfidf(df):
     '''

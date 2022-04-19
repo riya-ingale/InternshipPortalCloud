@@ -6,10 +6,8 @@ import nltk
 import pandas as pd
 import numpy as np
 
-from nltk.tokenize import sent_tokenize, word_tokenize
-from nltk.stem import PorterStemmer, WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfTransformer, CountVectorizer
-import re
+
 from .tokenizemod import tokenize
 def similarity_matrix(df):
     '''

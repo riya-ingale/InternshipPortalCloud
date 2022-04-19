@@ -3,12 +3,12 @@ import nltk
 nltk.download('punkt')
 nltk.download('wordnet')
 
-import pandas as pd
-import numpy as np
+# import pandas as pd
+# import numpy as np
 
-from nltk.tokenize import sent_tokenize, word_tokenize
-from nltk.stem import PorterStemmer, WordNetLemmatizer
-from sklearn.feature_extraction.text import TfidfTransformer, CountVectorizer
+from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
+# from sklearn.feature_extraction.text import TfidfTransformer, CountVectorizer
 import re
 def tokenize_lem(sentences):
     '''
