@@ -28,14 +28,7 @@
       <div class="wrap"></div>
       <div class="container-fluid all-show">
         <a class="navbar-brand" href="/" style="color: #c1c8e4">
-          <img
-            src="{{ url_for('static',filename='img/VIT.png') }}"
-            width="70"
-            height="30"
-            class="d-inline-block align-top"
-            alt=""
-          />
-          VIT Internship Portal
+          Internship Portal
         </a>
         <button
           class="navbar-toggler"
@@ -53,7 +46,7 @@
             <li class="nav-item">
               <a class="nav-link" href="/"><i class="fa fa-home"> Home</i></a>
             </li>
-            
+
             {% if not current_user.role == "admin" %}
             <li class="nav-item">
               <a class="nav-link" href="/newinternship"
@@ -65,9 +58,7 @@
                 ><i class="fa fa-user"> User</i></a
               >
             </li>
-            {% endif %}
-
-            {% if current_user.role == "admin" %}
+            {% endif %} {% if current_user.role == "admin" %}
             <li class="nav-item">
               <a class="nav-link" href="/search"
                 ><i class="fa fa-search"> Search</i></a
@@ -75,9 +66,15 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/admin/dashboard"
-                ><i class="fa fa-upload"> Upload Data</i></a>
+                ><i class="fa fa-upload"> Upload Data</i></a
+              >
             </li>
             {% endif %}
+            <li class="nav-item">
+              <a class="nav-link" href="/recommend"
+                ><i class="fas fa-comment">Browse Internships</i></a
+              >
+            </li>
 
             <li class="nav-item">
               <a class="nav-link" href="/aboutus"
@@ -684,13 +681,7 @@
             </div>
             <div class="row">
               <div
-                class="
-                  col-xl-8 col-md-4 col-sm-4 col-auto
-                  my-md-0
-                  mt-5
-                  order-sm-1 order-3
-                  align-self-end
-                "
+                class="col-xl-8 col-md-4 col-sm-4 col-auto my-md-0 mt-5 order-sm-1 order-3 align-self-end"
               >
                 <p class="social text-muted mb-0 pb-0 bold-text">
                   <span class="mx-2"
@@ -709,11 +700,7 @@
                 <small class="rights"><span>&#174;</span>Team VIT </small>
               </div>
               <div
-                class="
-                  col-xl-2 col-md-4 col-sm-4 col-auto
-                  order-1
-                  align-self-end
-                "
+                class="col-xl-2 col-md-4 col-sm-4 col-auto order-1 align-self-end"
               >
                 <h6 class="mt-55 mt-2 text-muted bold-text">
                   <b>Contact Us</b>
@@ -724,12 +711,7 @@
                 >
               </div>
               <div
-                class="
-                  col-xl-2 col-md-4 col-sm-4 col-auto
-                  order-2
-                  align-self-end
-                  mt-3
-                "
+                class="col-xl-2 col-md-4 col-sm-4 col-auto order-2 align-self-end mt-3"
               >
                 <h6 class="mt-55 mt-2 text-muted bold-text">
                   <b>Give Your Feedback</b>

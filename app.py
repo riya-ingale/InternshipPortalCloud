@@ -10,6 +10,7 @@ from datetime import datetime
 import pdfkit
 from openpyxl import Workbook, load_workbook
 from azure.storage.blob import BlobServiceClient
+
 import azure.cognitiveservices.speech as speechsdk
 
 from MLStudioModels.data_clean import dataclean
@@ -1027,7 +1028,6 @@ def recommend():
 
     records = ScrappedInternships.query.all()
     return render_template('recommendation.html', records = records, result = None)
-
 
 
 # @app.route('/addcsvtodb')

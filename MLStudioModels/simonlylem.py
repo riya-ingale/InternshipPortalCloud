@@ -1,7 +1,7 @@
 # downloading resources and importing libraries
 import nltk
-nltk.download('punkt')
-nltk.download('wordnet')
+# nltk.download('punkt')
+# nltk.download('wordnet')
 
 import pandas as pd
 import numpy as np
