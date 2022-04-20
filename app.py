@@ -1099,6 +1099,9 @@ def speech():
     elif speech_recognition_result.reason == speechsdk.ResultReason.Canceled:
         return "Error in recognising text"
 
+@app.route('/map')
+def map():
+    return render_template('map.html')
 
 if __name__ == '__main__':
     db.create_all()
