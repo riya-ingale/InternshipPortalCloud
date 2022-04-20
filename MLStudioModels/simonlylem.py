@@ -1,5 +1,6 @@
 # downloading resources and importing libraries
-import nltk
+
+# import nltk
 # nltk.download('punkt')
 # nltk.download('wordnet')
 

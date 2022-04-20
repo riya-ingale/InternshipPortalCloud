@@ -988,30 +988,32 @@ def excelformatdownload():
 def chat():
     return render_template('chat.html')
 
+# -----------Uploading and Downloading Files to Azure BLOB Storage example -------------------
 
-@app.route('/uploadfiles', methods=['GET', 'POST'])
-def uploadfiles():
-    if request.method == "POST":
-        print('Recieved POST request')
-        try:
-            file = request.files['file']
-            print("file - ",file)
-            container_client.upload_blob(file.filename, file) 
-            # upload the file to the container using the filename as the blob name
-            print("Uploaded file to blob storage")
-        except Exception as e:
-            print(e)
-            return "Couldn't Upload your file to the Website"
-        return f"Uploaded {file.filename}"
-    elif request.method == "GET":
-        return render_template('uploadfiles.html')    
+# @app.route('/uploadfiles', methods=['GET', 'POST'])
+# def uploadfiles():
+#     if request.method == "POST":
+#         print('Recieved POST request')
+#         try:
+#             file = request.files['file']
+#             print("file - ",file)
+#             container_client.upload_blob(file.filename, file) 
+#             # upload the file to the container using the filename as the blob name
+#             print("Uploaded file to blob storage")
+#         except Exception as e:
+#             print(e)
+#             return "Couldn't Upload your file to the Website"
+#         return f"Uploaded {file.filename}"
+#     elif request.method == "GET":
+#         return render_template('uploadfiles.html')    
 
-@app.route('/getfiles')
-def getfiles():
-    blob_client = container_client.get_blob_client(blob="104-Meta-offerletter")
-    # get blob client to interact with the blob and get blob url
-    return render_template('getfiles.html', file = blob_client.url)
+# @app.route('/getfiles')
+# def getfiles():
+#     blob_client = container_client.get_blob_client(blob="104-Meta-offerletter")
+#     # get blob client to interact with the blob and get blob url
+#     return render_template('getfiles.html', file = blob_client.url)
 
+# -------------------------------------------------------------------------------------------------
 
 @app.route('/recommend', methods=['GET','POST'])
 def recommend():

@@ -1,15 +1,18 @@
 # downloading resources and importing libraries
-import nltk
+
+# import nltk
 # nltk.download('punkt')
 # nltk.download('wordnet')
 
-import pandas as pd
-import numpy as np
+# import pandas as pd
+# import numpy as np
 
-from nltk.tokenize import sent_tokenize, word_tokenize
-from nltk.stem import PorterStemmer, WordNetLemmatizer
-from sklearn.feature_extraction.text import TfidfTransformer, CountVectorizer
-import re
+# from nltk.tokenize import sent_tokenize, word_tokenize
+# from nltk.stem import PorterStemmer, WordNetLemmatizer
+# from sklearn.feature_extraction.text import TfidfTransformer, CountVectorizer
+
+# import re
+
 def dataclean(df):
     df.loc[df['Title'] == 'Business Development (Sales)', 'Skills Required'] = 'Sales, Marketing'
     df.loc[df['Title'] == 'Human Resources (HR)', 'Skills Required'] = 'Problem Solving, Pulic Relations'
