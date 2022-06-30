@@ -776,7 +776,7 @@ def exportall():
                             internship.enddate = internship.enddate.strftime(
                                 "%d/ %m/ %y")
                         record_internship = [internship.companyname, internship.position, internship.domain, internship.source, internship.skills_acquired,
-                                             internship.companyrepresentative_name, internship.companyrepresentative_contact, internship.startdate, internship.enddate, internship.feedback, internship.workenv, internship.satisfied, internship.recommendation, '=HYPERLINK("{}", "{}")'.format(f"http://127.0.0.1:5000/downloadcompletioncert/{internship.id}", "Download Cert")]
+                                             internship.companyrepresentative_name, internship.companyrepresentative_contact, internship.startdate, internship.enddate, internship.feedback, internship.workenv, internship.satisfied, internship.recommendation, '=HYPERLINK("{}", "{}")'.format(f"https://internshipportal.azurewebsites.net/downloadcompletioncert/{internship.id}", "Download Cert")]
                         record = record_student + record_internship
                         ws.append(record)
                         added = 1
@@ -963,7 +963,7 @@ def docustomexport():
                             internship.enddate = internship.enddate.strftime(
                                 "%d/ %m/ %y")
                         record_internship = [internship.companyname, internship.position, internship.domain, internship.source, internship.skills_acquired,
-                                             internship.companyrepresentative_name, internship.companyrepresentative_contact, internship.startdate, internship.enddate, internship.feedback, internship.workenv, internship.satisfied, internship.recommendation, '=HYPERLINK("{}", "{}")'.format(f"http://127.0.0.1:5000/downloadcompletioncert/{internship.id}", "Download Cert")]
+                                             internship.companyrepresentative_name, internship.companyrepresentative_contact, internship.startdate, internship.enddate, internship.feedback, internship.workenv, internship.satisfied, internship.recommendation, '=HYPERLINK("{}", "{}")'.format(f"https://internshipportal.azurewebsites.net/downloadcompletioncert/{internship.id}", "Download Cert")]
                         record = record_student + record_internship
                         ws.append(record)
                         added = 1
@@ -1087,7 +1087,6 @@ def speech():
         # cards = ScrappedInternships.query.filter(
         #     or_(ScrappedInternships.title.like(result), ScrappedInternships.company.like(result),ScrappedInternships.skills.like(result))).all()
         if cards:    
-            
             return render_template('recommendation.html',result = result,records = cards )
         else:
             
