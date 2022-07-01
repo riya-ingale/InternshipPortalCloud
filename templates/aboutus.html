@@ -42,9 +42,14 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/chat"
-                ><i class="fas fa-comment">Internbot</i></a
+                ><i class="fa fa-comment-o"> Internbot</i></a
               >
-          </li>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/recommend"
+                ><i class="fa fa-search"> Browse Internships</i></a
+              >
+            </li>
             {% if current_user.is_authenticated %} 
             {% if not current_user.role == "admin" %}
             <li class="nav-item">
